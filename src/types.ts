@@ -28,6 +28,9 @@ export interface SportEvent {
   status: EventStatus;
   winner?: string;
   startTime: number;
+  poolA?: number;
+  poolB?: number;
+  poolDraw?: number;
 }
 
 export interface Bet {

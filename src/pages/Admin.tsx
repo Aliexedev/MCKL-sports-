@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { collection, doc, setDoc, updateDoc, onSnapshot, query, orderBy, getDocs, writeBatch, increment } from 'firebase/firestore';
+import { collection, doc, setDoc, updateDoc, onSnapshot, query, orderBy, getDocs, writeBatch, increment, deleteDoc } from 'firebase/firestore';
 import { db } from '../lib/firebase';
 import { SportEvent, HouseColor, Sport, EventStatus, Bet } from '../types';
-import { Shield, Plus, Edit2, Play, CheckCircle } from 'lucide-react';
+import { Shield, Plus, Edit2, Play, CheckCircle, Trash2 } from 'lucide-react';
 import { format } from 'date-fns';
 import { cn, getTeamName } from '../lib/utils';
 
@@ -75,7 +75,6 @@ export const Admin: React.FC = () => {
 
   const resolveEvent = async (event: SportEvent, winner: 'teamA' | 'teamB' | 'draw') => {
     if (!window.confirm(`Are you sure? Winner is ${winner}?`)) return;
-
     try {
       await updateDoc(doc(db, 'events', event.id), {
         status: 'completed',
@@ -84,7 +83,6 @@ export const Admin: React.FC = () => {
 
       const betsSnap = await getDocs(query(collection(db, 'bets')));
       const eventBets = betsSnap.docs.map(d => d.data() as Bet).filter(b => b.eventId === event.id && b.status === 'pending');
-
       const batch = writeBatch(db);
       
       for (const bet of eventBets) {
@@ -111,6 +109,16 @@ export const Admin: React.FC = () => {
     } catch (err) {
       console.error(err);
       alert('Failed to resolve event');
+    }
+  };
+
+  const deleteEvent = async (eventId: string) => {
+    if (!window.confirm('Are you sure you want to delete this event?')) return;
+    try {
+      await deleteDoc(doc(db, 'events', eventId));
+    } catch (err) {
+      console.error(err);
+      alert('Failed to delete event');
     }
   };
 
@@ -195,9 +203,7 @@ export const Admin: React.FC = () => {
                   <span className="mx-2 text-gray-500 italic font-medium text-xs">VS</span> 
                   <span className={colorText(ev.teamB)}>{getTeamName(ev.teamB)}</span>
                 </div>
-                <div className="text-[10px] text-gray-500 mt-1 font-bold uppercase tracking-widest">
-                  {format(ev.startTime, 'MMM d, h:mm a')}
-                </div>
+                <div className="text-[10px] text-gray-400 mt-1 font-bold uppercase tracking-widest flex flex-wrap gap-2"><span>Odds: {ev.oddsA.toFixed(2)} / {ev.oddsDraw.toFixed(2)} / {ev.oddsB.toFixed(2)}</span><span className="text-gray-600">|</span><span>{format(ev.startTime, 'MMM d, h:mm a')}</span></div>
               </div>
 
               {ev.status !== 'completed' && (
@@ -224,11 +230,12 @@ export const Admin: React.FC = () => {
                       />
                     </div>
                   )}
-                  {ev.status === 'live' && (
+                  {(ev.status === 'live' || ev.status === 'scheduled') && (
                     <div className="flex gap-2">
                       <button onClick={() => resolveEvent(ev, 'teamA')} className="bg-[#0F1113] border border-gray-700 hover:border-red-500 px-3 py-1.5 rounded text-[9px] font-bold uppercase tracking-widest text-gray-300">Win {getTeamName(ev.teamA)}</button>
                       <button onClick={() => resolveEvent(ev, 'draw')} className="bg-[#0F1113] border border-gray-700 hover:border-red-500 px-3 py-1.5 rounded text-[9px] font-bold uppercase tracking-widest text-gray-300">Draw</button>
                       <button onClick={() => resolveEvent(ev, 'teamB')} className="bg-[#0F1113] border border-gray-700 hover:border-red-500 px-3 py-1.5 rounded text-[9px] font-bold uppercase tracking-widest text-gray-300">Win {getTeamName(ev.teamB)}</button>
+                      <button onClick={() => deleteEvent(ev.id)} className="bg-red-900/50 text-red-500 border border-red-900 hover:border-red-500 px-3 py-1.5 rounded text-[9px] font-bold uppercase tracking-widest ml-4">Delete</button>
                     </div>
                   )}
                 </div>

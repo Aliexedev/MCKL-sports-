@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { collection, query, orderBy, onSnapshot, doc, setDoc, increment, updateDoc } from 'firebase/firestore';
+import { collection, query, orderBy, onSnapshot, doc, setDoc, increment, updateDoc, getDoc } from 'firebase/firestore';
 import { db } from '../lib/firebase';
 import { useAuth } from '../contexts/AuthContext';
 import { HouseSelection } from '../components/HouseSelection';
@@ -74,6 +74,37 @@ export const Dashboard: React.FC = () => {
         balance: increment(-amount),
         updatedAt: Date.now()
       });
+
+      // 3. Algorithm to update odds based on pool size
+      const evRef = doc(db, 'events', ev.id);
+      const evSnap = await getDoc(evRef);
+      if (evSnap.exists()) {
+        const currentEv = evSnap.data() as SportEvent;
+        const BASE_POOL = 1000;
+        let poolA = currentEv.poolA || (BASE_POOL / currentEv.oddsA);
+        let poolB = currentEv.poolB || (BASE_POOL / currentEv.oddsB);
+        let poolDraw = currentEv.poolDraw || (BASE_POOL / currentEv.oddsDraw);
+        
+        if (prediction === currentEv.teamA) poolA += amount;
+        else if (prediction === currentEv.teamB) poolB += amount;
+        else poolDraw += amount;
+
+        const totalPool = poolA + poolB + poolDraw;
+        const margin = 0.05; // 5% house margin
+        
+        const newOddsA = Math.max(1.01, (totalPool * (1 - margin)) / poolA);
+        const newOddsB = Math.max(1.01, (totalPool * (1 - margin)) / poolB);
+        const newOddsDraw = Math.max(1.01, (totalPool * (1 - margin)) / poolDraw);
+
+        await updateDoc(evRef, {
+          poolA,
+          poolB,
+          poolDraw,
+          oddsA: newOddsA,
+          oddsB: newOddsB,
+          oddsDraw: newOddsDraw
+        });
+      }
 
       alert('Bet placed successfully!');
       setSelectedEvent(null);

@@ -105,7 +105,7 @@ export const EventCard: React.FC<EventCardProps> = ({ ev, selectedEvent, setSele
             <div className="flex flex-col sm:flex-row gap-2 sm:gap-4">
               <div className="relative flex-1">
                 <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 text-[10px] font-bold">RM</span>
-                <input type="number" inputMode="decimal" pattern="[0-9]*" value={betAmount} onChange={e => setBetAmount(e.target.value)} className="w-full bg-[#1A1D21] border border-gray-700 rounded py-2 sm:py-3 pl-10 pr-3 text-right font-bold text-sm focus:outline-none focus:border-red-500 text-white" />
+                <input type="text" inputMode="numeric" pattern="[0-9]*" value={betAmount} onChange={e => setBetAmount(e.target.value)} className="w-full bg-[#1A1D21] border border-gray-700 rounded py-3 sm:py-4 pl-10 pr-3 text-right font-bold text-lg focus:outline-none focus:border-red-500 text-white" />
               </div>
               <div className="flex gap-2">
                 <button onClick={() => handleBet(ev)} disabled={betting} className="flex-1 bg-red-600 hover:bg-red-700 text-white font-black text-[10px] px-4 py-3 rounded uppercase tracking-widest disabled:opacity-50 transition-colors">
