@@ -20,6 +20,7 @@ export const Login: React.FC = () => {
     try {
       const provider = new GoogleAuthProvider();
       await signInWithPopup(auth, provider);
+      sessionStorage.removeItem('welcomeAnimationShown_v5');
     } catch (error) {
       console.error('Sign in error', error);
       alert('Failed to sign in. Please try again.');

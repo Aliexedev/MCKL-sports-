@@ -4,9 +4,9 @@ import { motion, AnimatePresence } from 'motion/react';
 export const WelcomeAnimation: React.FC = () => {
   const [show, setShow] = useState(() => {
     // Check if we've already shown the animation in this session
-    const hasShown = sessionStorage.getItem('welcomeAnimationShown_v3');
+    const hasShown = sessionStorage.getItem('welcomeAnimationShown_v5');
     if (!hasShown) {
-      sessionStorage.setItem('welcomeAnimationShown_v3', 'true');
+      sessionStorage.setItem('welcomeAnimationShown_v5', 'true');
       return true;
     }
     return false;
@@ -36,19 +36,10 @@ export const WelcomeAnimation: React.FC = () => {
             animate={{ scale: 1, opacity: 1, y: 0 }}
             transition={{ duration: 1.2, ease: "easeOut" }}
           >
-            <motion.h2 
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.8, duration: 1.5 }}
-              className="text-2xl font-black tracking-tighter text-white uppercase mb-4"
-            >
-              MCKL<span className="text-red-500">SPORTS</span>
-            </motion.h2>
-            
             <motion.img 
               src="https://i.imgur.com/U9s8qfx_d.webp?maxwidth=760&fidelity=grand" 
               alt="MCKL SPORTS Logo" 
-              className="h-40 object-contain"
+              className="h-40 object-contain mb-4"
               referrerPolicy="no-referrer"
               initial={{ scale: 0.8, rotate: -10 }}
               animate={{ scale: 1, rotate: 0 }}
@@ -59,6 +50,15 @@ export const WelcomeAnimation: React.FC = () => {
                 delay: 0.4
               }}
             />
+
+            <motion.h2 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.8, duration: 1.5 }}
+              className="text-2xl font-black tracking-tighter text-white uppercase"
+            >
+              MCKL<span className="text-red-500">SPORTS</span>
+            </motion.h2>
             
             <motion.div 
               initial={{ opacity: 0, width: 0 }}
