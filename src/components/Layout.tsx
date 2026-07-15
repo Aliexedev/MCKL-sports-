@@ -33,9 +33,12 @@ export const Layout: React.FC = () => {
       {/* Header / Navigation */}
       <nav className="flex items-center justify-between px-6 py-3 pt-[calc(0.75rem+env(safe-area-inset-top))] bg-[#1A1D21] border-b border-gray-800 sticky top-0 z-50">
         <div className="flex items-center gap-6">
-          <Link to="/" className="flex flex-col items-start gap-1">
-            <img src="https://i.imgur.com/U9s8qfx_d.webp?maxwidth=760&fidelity=grand" alt="MCKL SPORTS" className="h-8 object-contain" referrerPolicy="no-referrer" />
-            <span className="text-[10px] uppercase tracking-[0.2em] text-gray-400">Carnival 2026</span>
+          <Link to="/" className="flex items-center gap-3 hover:opacity-90 transition-opacity">
+            <img src="https://i.imgur.com/U9s8qfx_d.webp?maxwidth=760&fidelity=grand" alt="MCKL SPORTS Logo" className="h-8 object-contain" referrerPolicy="no-referrer" />
+            <div className="flex flex-col items-start leading-none">
+              <span className="text-sm font-black tracking-wider text-white">MCKLSPORTS</span>
+              <span className="text-[9px] uppercase tracking-[0.15em] text-gray-400">Carnival 2026</span>
+            </div>
           </Link>
           
           {user && (
