@@ -30,12 +30,12 @@ export const Login: React.FC = () => {
     <div className="flex min-h-screen items-center justify-center bg-[#0F1113] px-4 font-sans">
       <div className="w-full max-w-sm space-y-8 rounded-xl bg-[#1A1D21] p-8 shadow-xl border border-gray-800">
         <div className="text-center">
-          <Trophy className="mx-auto h-12 w-12 text-red-500 mb-4" />
-          <h2 className="text-2xl font-black tracking-tighter text-white uppercase">
+          <h2 className="text-2xl font-black tracking-tighter text-white uppercase mb-2">
             MCKL<span className="text-red-500">SPORTS</span>
           </h2>
+          <img src="https://i.imgur.com/U9s8qfx_d.webp?maxwidth=760&fidelity=grand" alt="MCKL SPORTS" className="mx-auto h-24 object-contain mb-4" referrerPolicy="no-referrer" />
           <p className="mt-2 text-[10px] uppercase tracking-[0.2em] text-gray-500 font-bold">
-            Carnival Authentication
+            Carnival 2026 Authentication
           </p>
         </div>
         <div className="mt-8">

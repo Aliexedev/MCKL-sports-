@@ -4,7 +4,8 @@ import { useAuth } from '../contexts/AuthContext';
 import { auth } from '../lib/firebase';
 import { signOut } from 'firebase/auth';
 import { Trophy, Home, Wallet, Shield, LogOut } from 'lucide-react';
-import { cn } from '../lib/utils';
+import { cn, getTeamName, getTeamLogo } from '../lib/utils';
+import { WelcomeAnimation } from './WelcomeAnimation';
 
 const colorText = (color: string) => {
   switch (color) {
@@ -27,12 +28,13 @@ export const Layout: React.FC = () => {
 
   return (
     <div className="flex flex-col min-h-screen bg-[#0F1113] text-gray-100 font-sans">
+      <WelcomeAnimation />
       {/* Header / Navigation */}
       <nav className="flex items-center justify-between px-6 py-3 bg-[#1A1D21] border-b border-gray-800 sticky top-0 z-50">
         <div className="flex items-center gap-6">
-          <Link to="/" className="flex flex-col">
-            <span className="text-xl font-black tracking-tighter text-white">MCKL<span className="text-red-500">SPORTS</span></span>
-            <span className="text-[10px] uppercase tracking-[0.2em] text-gray-400">Carnival 2024</span>
+          <Link to="/" className="flex flex-col items-start gap-1">
+            <img src="https://i.imgur.com/U9s8qfx_d.webp?maxwidth=760&fidelity=grand" alt="MCKL SPORTS" className="h-8 object-contain" referrerPolicy="no-referrer" />
+            <span className="text-[10px] uppercase tracking-[0.2em] text-gray-400">Carnival 2026</span>
           </Link>
           
           {user && (
@@ -61,14 +63,19 @@ export const Layout: React.FC = () => {
                 <span className="text-xs font-semibold text-white">Deposit</span>
               </Link>
               
-              <div className="flex flex-col items-end hidden sm:flex">
-                <span className="text-xs font-medium">{profile.displayName}</span>
-                <span className={cn(
-                  "text-[10px] font-bold uppercase",
-                  colorText(profile.houseColor)
-                )}>
-                  {profile.houseColor || 'No House'}
-                </span>
+              <div className="flex items-center gap-2 hidden sm:flex">
+                {profile.houseColor && (
+                  <img src={getTeamLogo(profile.houseColor)} alt={getTeamName(profile.houseColor)} className="w-6 h-6 object-contain" referrerPolicy="no-referrer" />
+                )}
+                <div className="flex flex-col items-end">
+                  <span className="text-xs font-medium">{profile.displayName}</span>
+                  <span className={cn(
+                    "text-[10px] font-bold uppercase",
+                    colorText(profile.houseColor)
+                  )}>
+                    {profile.houseColor ? getTeamName(profile.houseColor) : 'No House'}
+                  </span>
+                </div>
               </div>
               <button
                 onClick={handleLogout}
@@ -98,7 +105,7 @@ export const Layout: React.FC = () => {
         </div>
         <div className="flex items-center gap-4 text-[10px] text-gray-500 hidden sm:flex">
           <span>TNG Payment Services: ONLINE</span>
-          <span className="text-gray-600">© 2024 MCKL Sports Commission</span>
+          <span className="text-gray-600">© 2026 MCKL Sports Commission</span>
         </div>
       </footer>
     </div>

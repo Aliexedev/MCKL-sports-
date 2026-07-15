@@ -6,7 +6,7 @@ import { HouseSelection } from '../components/HouseSelection';
 import { SportEvent, Bet } from '../types';
 import { format } from 'date-fns';
 import { Trophy, Activity, AlertCircle } from 'lucide-react';
-import { cn } from '../lib/utils';
+import { cn, getTeamName, getTeamLogo } from '../lib/utils';
 
 const colorText = (color: string) => {
   switch (color) {
@@ -126,21 +126,21 @@ export const Dashboard: React.FC = () => {
 
         <div className="flex justify-between items-center px-4 mb-6">
           <div className="text-center">
-             <div className={cn("w-10 h-10 rounded-full mb-2 mx-auto flex items-center justify-center font-bold text-lg text-white", colorBg(ev.teamA).replace('bg-', 'bg-').split(' ')[0].replace('/20', ''))}>{ev.teamA.charAt(0)}</div>
-             <span className="text-xs font-bold uppercase">{ev.teamA}</span>
+             <img src={getTeamLogo(ev.teamA)} alt={getTeamName(ev.teamA)} className="w-10 h-10 mb-2 mx-auto object-contain" referrerPolicy="no-referrer" />
+             <span className="text-xs font-bold uppercase">{getTeamName(ev.teamA)}</span>
           </div>
           <div className="flex flex-col items-center">
              <span className="text-2xl font-black italic text-gray-600">VS</span>
           </div>
           <div className="text-center">
-             <div className={cn("w-10 h-10 rounded-full mb-2 mx-auto flex items-center justify-center font-bold text-lg text-white", colorBg(ev.teamB).replace('bg-', 'bg-').split(' ')[0].replace('/20', ''))}>{ev.teamB.charAt(0)}</div>
-             <span className="text-xs font-bold uppercase">{ev.teamB}</span>
+             <img src={getTeamLogo(ev.teamB)} alt={getTeamName(ev.teamB)} className="w-10 h-10 mb-2 mx-auto object-contain" referrerPolicy="no-referrer" />
+             <span className="text-xs font-bold uppercase">{getTeamName(ev.teamB)}</span>
           </div>
         </div>
 
         <div className="grid grid-cols-3 gap-2 mt-auto">
           <div className="p-2 bg-[#252A30] rounded border border-gray-700 text-center">
-            <p className="text-[9px] text-gray-500 uppercase font-bold tracking-widest">{ev.teamA} Win</p>
+            <p className="text-[9px] text-gray-500 uppercase font-bold tracking-widest">{getTeamName(ev.teamA)} Win</p>
             <p className="font-bold text-yellow-500">{ev.oddsA.toFixed(2)}</p>
           </div>
           <div className="p-2 bg-[#252A30] rounded border border-gray-700 text-center">
@@ -148,7 +148,7 @@ export const Dashboard: React.FC = () => {
             <p className="font-bold text-yellow-500">{ev.oddsDraw.toFixed(2)}</p>
           </div>
           <div className="p-2 bg-[#252A30] rounded border border-gray-700 text-center">
-            <p className="text-[9px] text-gray-500 uppercase font-bold tracking-widest">{ev.teamB} Win</p>
+            <p className="text-[9px] text-gray-500 uppercase font-bold tracking-widest">{getTeamName(ev.teamB)} Win</p>
             <p className="font-bold text-yellow-500">{ev.oddsB.toFixed(2)}</p>
           </div>
         </div>
@@ -157,9 +157,9 @@ export const Dashboard: React.FC = () => {
           selectedEvent === ev.id ? (
             <div className="mt-4 p-4 rounded border border-red-500/30 bg-[#252A30]/50">
               <div className="grid grid-cols-3 gap-2 mb-4">
-                <button onClick={() => setPrediction(ev.teamA)} className={cn("p-2 rounded text-[10px] font-bold uppercase tracking-widest border transition-colors", prediction === ev.teamA ? colorBg(ev.teamA) : "border-gray-700 text-gray-400 hover:border-red-500 hover:text-white")}>{ev.teamA}</button>
+                <button onClick={() => setPrediction(ev.teamA)} className={cn("p-2 rounded text-[10px] font-bold uppercase tracking-widest border transition-colors", prediction === ev.teamA ? colorBg(ev.teamA) : "border-gray-700 text-gray-400 hover:border-red-500 hover:text-white")}>{getTeamName(ev.teamA)}</button>
                 <button onClick={() => setPrediction('draw')} className={cn("p-2 rounded text-[10px] font-bold uppercase tracking-widest border transition-colors", prediction === 'draw' ? "bg-gray-700 border-gray-500 text-white" : "border-gray-700 text-gray-400 hover:border-red-500 hover:text-white")}>Draw</button>
-                <button onClick={() => setPrediction(ev.teamB)} className={cn("p-2 rounded text-[10px] font-bold uppercase tracking-widest border transition-colors", prediction === ev.teamB ? colorBg(ev.teamB) : "border-gray-700 text-gray-400 hover:border-red-500 hover:text-white")}>{ev.teamB}</button>
+                <button onClick={() => setPrediction(ev.teamB)} className={cn("p-2 rounded text-[10px] font-bold uppercase tracking-widest border transition-colors", prediction === ev.teamB ? colorBg(ev.teamB) : "border-gray-700 text-gray-400 hover:border-red-500 hover:text-white")}>{getTeamName(ev.teamB)}</button>
               </div>
               <div className="flex gap-4">
                 <div className="relative flex-1">
@@ -219,11 +219,11 @@ export const Dashboard: React.FC = () => {
                   {phaseEvents.map(ev => (
                     <div key={ev.id} className="bg-[#0F1113] border border-gray-800 p-3 rounded text-xs text-left relative shadow-sm">
                        <div className="flex justify-between items-center mb-1">
-                         <span className={cn("font-bold uppercase text-[10px] tracking-wider", colorText(ev.teamA))}>{ev.teamA}</span>
+                         <span className={cn("font-bold uppercase text-[10px] tracking-wider", colorText(ev.teamA))}>{getTeamName(ev.teamA)}</span>
                          <span className="font-bold text-gray-300">{ev.scoreA}</span>
                        </div>
                        <div className="flex justify-between items-center">
-                         <span className={cn("font-bold uppercase text-[10px] tracking-wider", colorText(ev.teamB))}>{ev.teamB}</span>
+                         <span className={cn("font-bold uppercase text-[10px] tracking-wider", colorText(ev.teamB))}>{getTeamName(ev.teamB)}</span>
                          <span className="font-bold text-gray-300">{ev.scoreB}</span>
                        </div>
                        {ev.status === 'completed' && <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 opacity-10 pointer-events-none"><Trophy className="w-8 h-8 text-white" /></div>}

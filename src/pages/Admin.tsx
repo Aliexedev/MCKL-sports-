@@ -4,7 +4,7 @@ import { db } from '../lib/firebase';
 import { SportEvent, HouseColor, Sport, EventStatus, Bet } from '../types';
 import { Shield, Plus, Edit2, Play, CheckCircle } from 'lucide-react';
 import { format } from 'date-fns';
-import { cn } from '../lib/utils';
+import { cn, getTeamName } from '../lib/utils';
 
 const colorText = (color: string) => {
   switch (color) {
@@ -140,13 +140,13 @@ export const Admin: React.FC = () => {
           <div>
             <label className={labelClass}>Team A (Color)</label>
             <select value={teamA} onChange={e=>setTeamA(e.target.value as HouseColor)} className={inputClass}>
-              <option value="red">Red</option><option value="blue">Blue</option><option value="green">Green</option><option value="yellow">Yellow</option>
+              <option value="red">Mustang (Red)</option><option value="blue">Kraken (Blue)</option><option value="green">Mamba (Green)</option><option value="yellow">Griffin (Yellow)</option>
             </select>
           </div>
           <div>
             <label className={labelClass}>Team B (Color)</label>
             <select value={teamB} onChange={e=>setTeamB(e.target.value as HouseColor)} className={inputClass}>
-              <option value="red">Red</option><option value="blue">Blue</option><option value="green">Green</option><option value="yellow">Yellow</option>
+              <option value="red">Mustang (Red)</option><option value="blue">Kraken (Blue)</option><option value="green">Mamba (Green)</option><option value="yellow">Griffin (Yellow)</option>
             </select>
           </div>
           <div>
@@ -191,9 +191,9 @@ export const Admin: React.FC = () => {
                   </span>
                 </div>
                 <div className="font-black text-sm uppercase">
-                  <span className={colorText(ev.teamA)}>{ev.teamA}</span> 
+                  <span className={colorText(ev.teamA)}>{getTeamName(ev.teamA)}</span> 
                   <span className="mx-2 text-gray-500 italic font-medium text-xs">VS</span> 
-                  <span className={colorText(ev.teamB)}>{ev.teamB}</span>
+                  <span className={colorText(ev.teamB)}>{getTeamName(ev.teamB)}</span>
                 </div>
                 <div className="text-[10px] text-gray-500 mt-1 font-bold uppercase tracking-widest">
                   {format(ev.startTime, 'MMM d, h:mm a')}
@@ -226,9 +226,9 @@ export const Admin: React.FC = () => {
                   )}
                   {ev.status === 'live' && (
                     <div className="flex gap-2">
-                      <button onClick={() => resolveEvent(ev, 'teamA')} className="bg-[#0F1113] border border-gray-700 hover:border-red-500 px-3 py-1.5 rounded text-[9px] font-bold uppercase tracking-widest text-gray-300">Win A</button>
+                      <button onClick={() => resolveEvent(ev, 'teamA')} className="bg-[#0F1113] border border-gray-700 hover:border-red-500 px-3 py-1.5 rounded text-[9px] font-bold uppercase tracking-widest text-gray-300">Win {getTeamName(ev.teamA)}</button>
                       <button onClick={() => resolveEvent(ev, 'draw')} className="bg-[#0F1113] border border-gray-700 hover:border-red-500 px-3 py-1.5 rounded text-[9px] font-bold uppercase tracking-widest text-gray-300">Draw</button>
-                      <button onClick={() => resolveEvent(ev, 'teamB')} className="bg-[#0F1113] border border-gray-700 hover:border-red-500 px-3 py-1.5 rounded text-[9px] font-bold uppercase tracking-widest text-gray-300">Win B</button>
+                      <button onClick={() => resolveEvent(ev, 'teamB')} className="bg-[#0F1113] border border-gray-700 hover:border-red-500 px-3 py-1.5 rounded text-[9px] font-bold uppercase tracking-widest text-gray-300">Win {getTeamName(ev.teamB)}</button>
                     </div>
                   )}
                 </div>

@@ -3,7 +3,7 @@ import { useAuth } from '../contexts/AuthContext';
 import { doc, updateDoc } from 'firebase/firestore';
 import { db } from '../lib/firebase';
 import { HouseColor } from '../types';
-import { cn } from '../lib/utils';
+import { cn, getTeamName, getTeamLogo } from '../lib/utils';
 
 export const HouseSelection: React.FC = () => {
   const { user, profile } = useAuth();
@@ -25,11 +25,11 @@ export const HouseSelection: React.FC = () => {
     }
   };
 
-  const houses: { color: HouseColor, bg: string, text: string, name: string }[] = [
-    { color: 'red', bg: 'bg-[#1A1D21] hover:bg-red-500/10 border-gray-800 hover:border-red-500/50', text: 'text-red-500', name: 'Red House' },
-    { color: 'blue', bg: 'bg-[#1A1D21] hover:bg-blue-500/10 border-gray-800 hover:border-blue-500/50', text: 'text-blue-500', name: 'Blue House' },
-    { color: 'green', bg: 'bg-[#1A1D21] hover:bg-green-500/10 border-gray-800 hover:border-green-500/50', text: 'text-green-500', name: 'Green House' },
-    { color: 'yellow', bg: 'bg-[#1A1D21] hover:bg-yellow-500/10 border-gray-800 hover:border-yellow-500/50', text: 'text-yellow-500', name: 'Yellow House' },
+  const houses: { color: HouseColor, bg: string, text: string }[] = [
+    { color: 'red', bg: 'bg-[#1A1D21] hover:bg-red-500/10 border-gray-800 hover:border-red-500/50', text: 'text-red-500' },
+    { color: 'blue', bg: 'bg-[#1A1D21] hover:bg-blue-500/10 border-gray-800 hover:border-blue-500/50', text: 'text-blue-500' },
+    { color: 'green', bg: 'bg-[#1A1D21] hover:bg-green-500/10 border-gray-800 hover:border-green-500/50', text: 'text-green-500' },
+    { color: 'yellow', bg: 'bg-[#1A1D21] hover:bg-yellow-500/10 border-gray-800 hover:border-yellow-500/50', text: 'text-yellow-500' },
   ];
 
   return (
@@ -44,13 +44,13 @@ export const HouseSelection: React.FC = () => {
             disabled={loading}
             onClick={() => handleSelect(h.color)}
             className={cn(
-              "p-8 rounded border transition-all flex flex-col items-center justify-center gap-2",
+              "p-8 rounded border transition-all flex flex-col items-center justify-center gap-4",
               h.bg,
               loading && "opacity-50 cursor-not-allowed"
             )}
           >
-            <div className={cn("w-4 h-4 rounded-full mb-2", h.text.replace('text-', 'bg-'))}></div>
-            <span className={cn("text-xs font-black uppercase tracking-widest", h.text)}>{h.name}</span>
+            <img src={getTeamLogo(h.color)} alt={getTeamName(h.color)} className="w-16 h-16 object-contain" referrerPolicy="no-referrer" />
+            <span className={cn("text-sm font-black uppercase tracking-widest", h.text)}>{getTeamName(h.color)}</span>
           </button>
         ))}
       </div>

@@ -3,7 +3,7 @@ import { collection, query, orderBy, onSnapshot } from 'firebase/firestore';
 import { db } from '../lib/firebase';
 import { UserProfile } from '../types';
 import { Trophy, Medal } from 'lucide-react';
-import { cn } from '../lib/utils';
+import { cn, getTeamName, getTeamLogo } from '../lib/utils';
 
 export const Leaderboard: React.FC = () => {
   const [users, setUsers] = useState<UserProfile[]>([]);
@@ -53,17 +53,14 @@ export const Leaderboard: React.FC = () => {
                  <span className="text-gray-600 font-black text-xs">{String(i + 1).padStart(2, '0')}</span>}
               </div>
               <div className="col-span-6 flex items-center gap-3">
-                <div className={cn("w-6 h-6 rounded flex items-center justify-center text-[10px] font-bold text-white", 
-                  u.houseColor === 'red' ? 'bg-red-600' :
-                  u.houseColor === 'blue' ? 'bg-blue-600' :
-                  u.houseColor === 'green' ? 'bg-green-600' :
-                  u.houseColor === 'yellow' ? 'bg-yellow-500 text-black' : 'bg-gray-700'
-                )}>
-                  {u.houseColor ? u.houseColor.charAt(0).toUpperCase() : '?'}
-                </div>
+                {u.houseColor ? (
+                  <img src={getTeamLogo(u.houseColor)} alt={getTeamName(u.houseColor)} className="w-6 h-6 object-contain" referrerPolicy="no-referrer" />
+                ) : (
+                  <div className="w-6 h-6 rounded bg-gray-700 flex items-center justify-center text-[10px] font-bold text-white">?</div>
+                )}
                 <div className="flex flex-col">
                   <span className="font-bold text-xs text-white">{u.displayName || 'Unknown'}</span>
-                  <span className={cn("text-[10px] font-bold uppercase", colorText(u.houseColor))}>{u.houseColor || 'No House'}</span>
+                  <span className={cn("text-[10px] font-bold uppercase", colorText(u.houseColor))}>{u.houseColor ? getTeamName(u.houseColor) : 'No House'}</span>
                 </div>
               </div>
               <div className="col-span-4 text-right font-bold text-green-400 text-sm">
