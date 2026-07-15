@@ -22,6 +22,7 @@ export const Layout: React.FC = () => {
   const navigate = useNavigate();
 
   const handleLogout = async () => {
+    sessionStorage.removeItem('welcomeAnimationShown_v3');
     await signOut(auth);
     navigate('/login');
   };

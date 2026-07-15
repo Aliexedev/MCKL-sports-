@@ -4,9 +4,9 @@ import { motion, AnimatePresence } from 'motion/react';
 export const WelcomeAnimation: React.FC = () => {
   const [show, setShow] = useState(() => {
     // Check if we've already shown the animation in this session
-    const hasShown = sessionStorage.getItem('welcomeAnimationShown_v2');
+    const hasShown = sessionStorage.getItem('welcomeAnimationShown_v3');
     if (!hasShown) {
-      sessionStorage.setItem('welcomeAnimationShown_v2', 'true');
+      sessionStorage.setItem('welcomeAnimationShown_v3', 'true');
       return true;
     }
     return false;
