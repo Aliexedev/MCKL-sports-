@@ -9,7 +9,7 @@ export const Login: React.FC = () => {
   const { user, loading } = useAuth();
 
   if (loading) {
-    return <div className="flex h-screen items-center justify-center bg-[#0F1113] text-white font-bold text-xs tracking-widest uppercase">Loading System...</div>;
+    return <div className="flex h-[100dvh] items-center justify-center bg-[#0F1113] text-white font-bold text-xs tracking-widest uppercase">Loading System...</div>;
   }
 
   if (user) {
@@ -28,7 +28,7 @@ export const Login: React.FC = () => {
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-[#0F1113] px-4 font-sans">
+    <div className="flex min-h-[100dvh] items-center justify-center bg-[#0F1113] px-4 font-sans">
       <div className="w-full max-w-sm space-y-8 rounded-xl bg-[#1A1D21] p-8 shadow-xl border border-gray-800">
         <div className="text-center">
           <img src="https://i.imgur.com/U9s8qfx_d.webp?maxwidth=760&fidelity=grand" alt="MCKL SPORTS" className="mx-auto h-24 object-contain mb-4" referrerPolicy="no-referrer" />

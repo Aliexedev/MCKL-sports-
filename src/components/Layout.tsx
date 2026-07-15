@@ -28,10 +28,10 @@ export const Layout: React.FC = () => {
   };
 
   return (
-    <div className="flex flex-col min-h-screen bg-[#0F1113] text-gray-100 font-sans">
+    <div className="flex flex-col min-h-[100dvh] bg-[#0F1113] text-gray-100 font-sans">
       <WelcomeAnimation />
       {/* Header / Navigation */}
-      <nav className="flex items-center justify-between px-6 py-3 bg-[#1A1D21] border-b border-gray-800 sticky top-0 z-50">
+      <nav className="flex items-center justify-between px-6 py-3 pt-[calc(0.75rem+env(safe-area-inset-top))] bg-[#1A1D21] border-b border-gray-800 sticky top-0 z-50">
         <div className="flex items-center gap-6">
           <Link to="/" className="flex flex-col items-start gap-1">
             <img src="https://i.imgur.com/U9s8qfx_d.webp?maxwidth=760&fidelity=grand" alt="MCKL SPORTS" className="h-8 object-contain" referrerPolicy="no-referrer" />
@@ -99,7 +99,7 @@ export const Layout: React.FC = () => {
       </div>
 
       {/* Footer Status Bar */}
-      <footer className="h-8 bg-[#0a0c0e] border-t border-gray-800 flex items-center justify-between px-6 shrink-0">
+      <footer className="bg-[#0a0c0e] border-t border-gray-800 flex items-center justify-between px-6 shrink-0 h-[calc(2rem+env(safe-area-inset-bottom))] pb-[env(safe-area-inset-bottom)]">
         <div className="flex items-center gap-4 text-[10px] text-gray-500">
           <span className="flex items-center gap-1"><div className="w-1.5 h-1.5 bg-green-500 rounded-full"></div> Server: Cloud-Main-01</span>
           <span>Secure SSL/TLS (Firebase)</span>
