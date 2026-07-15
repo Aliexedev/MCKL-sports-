@@ -1,0 +1,100 @@
+{
+  "entities": {
+    "User": {
+      "title": "User",
+      "description": "User profile with balance for betting",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string" },
+        "email": { "type": "string" },
+        "displayName": { "type": "string" },
+        "houseColor": { "type": "string", "enum": ["red", "yellow", "blue", "green"] },
+        "balance": { "type": "number", "minimum": 0 },
+        "createdAt": { "type": "number" },
+        "updatedAt": { "type": "number" }
+      },
+      "required": ["uid", "email", "houseColor", "balance"]
+    },
+    "Admin": {
+      "title": "Admin",
+      "description": "Admin authorization document",
+      "type": "object",
+      "properties": {
+        "email": { "type": "string" }
+      }
+    },
+    "Event": {
+      "title": "Event",
+      "description": "A sports event for betting",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "sport": { "type": "string", "enum": ["football", "basketball", "volleyball"] },
+        "phase": { "type": "string" },
+        "teamA": { "type": "string", "enum": ["red", "yellow", "blue", "green"] },
+        "teamB": { "type": "string", "enum": ["red", "yellow", "blue", "green"] },
+        "scoreA": { "type": "number" },
+        "scoreB": { "type": "number" },
+        "oddsA": { "type": "number" },
+        "oddsB": { "type": "number" },
+        "oddsDraw": { "type": "number" },
+        "status": { "type": "string", "enum": ["scheduled", "live", "completed"] },
+        "winner": { "type": "string" },
+        "startTime": { "type": "number" }
+      },
+      "required": ["sport", "teamA", "teamB", "status"]
+    },
+    "Bet": {
+      "title": "Bet",
+      "description": "A bet placed by a user",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "userId": { "type": "string" },
+        "eventId": { "type": "string" },
+        "prediction": { "type": "string" },
+        "amount": { "type": "number", "minimum": 1 },
+        "potentialPayout": { "type": "number" },
+        "status": { "type": "string", "enum": ["pending", "won", "lost"] },
+        "createdAt": { "type": "number" }
+      },
+      "required": ["userId", "eventId", "prediction", "amount", "status"]
+    },
+    "Transaction": {
+      "title": "Transaction",
+      "description": "TNG Deposit Transaction",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "userId": { "type": "string" },
+        "amount": { "type": "number", "minimum": 1 },
+        "method": { "type": "string", "enum": ["tng"] },
+        "status": { "type": "string", "enum": ["pending", "completed"] },
+        "createdAt": { "type": "number" }
+      },
+      "required": ["userId", "amount", "method", "status"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": { "$ref": "#/entities/User" },
+      "description": "User profiles"
+    },
+    "/admin/{userId}": {
+      "schema": { "$ref": "#/entities/Admin" },
+      "description": "Admin privileges"
+    },
+    "/events/{eventId}": {
+      "schema": { "$ref": "#/entities/Event" },
+      "description": "Sports events"
+    },
+    "/bets/{betId}": {
+      "schema": { "$ref": "#/entities/Bet" },
+      "description": "User bets"
+    },
+    "/transactions/{transactionId}": {
+      "schema": { "$ref": "#/entities/Transaction" },
+      "description": "User deposit transactions"
+    }
+  }
+}

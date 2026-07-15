@@ -1,0 +1,95 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isAdmin() {
+      return isSignedIn() && exists(/databases/$(database)/documents/admin/$(request.auth.uid));
+    }
+
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+
+    function incoming() {
+      return request.resource.data;
+    }
+
+    function existing() {
+      return resource.data;
+    }
+
+    function isValidId(id) {
+      return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    function isValidUser(data) {
+      return data.keys().hasAll(['uid', 'email', 'houseColor', 'balance']) &&
+             data.uid is string &&
+             data.email is string &&
+             data.houseColor in ['red', 'yellow', 'blue', 'green', ''] &&
+             data.balance is number && data.balance >= 0;
+    }
+
+    function isValidEvent(data) {
+      return data.keys().hasAll(['sport', 'teamA', 'teamB', 'status']) &&
+             data.sport in ['football', 'basketball', 'volleyball'] &&
+             data.teamA in ['red', 'yellow', 'blue', 'green'] &&
+             data.teamB in ['red', 'yellow', 'blue', 'green'] &&
+             data.status in ['scheduled', 'live', 'completed'];
+    }
+
+    function isValidBet(data) {
+      return data.keys().hasAll(['userId', 'eventId', 'prediction', 'amount', 'status']) &&
+             data.userId is string &&
+             data.eventId is string &&
+             data.prediction in ['red', 'yellow', 'blue', 'green', 'draw'] &&
+             data.amount is number && data.amount > 0 &&
+             data.status in ['pending', 'won', 'lost'];
+    }
+
+    function isValidTransaction(data) {
+      return data.keys().hasAll(['userId', 'amount', 'method', 'status']) &&
+             data.userId is string &&
+             data.amount is number && data.amount > 0 &&
+             data.method == 'tng' &&
+             data.status in ['pending', 'completed'];
+    }
+
+    match /users/{userId} {
+      allow read: if isSignedIn(); // Need to read for leaderboards
+      allow create: if isOwner(userId) && isValidId(userId) && isValidUser(incoming()) && incoming().uid == userId;
+      allow update: if isOwner(userId) && isValidUser(incoming()) && incoming().uid == existing().uid && incoming().email == existing().email || isAdmin();
+    }
+
+    match /admin/{userId} {
+      allow read: if isSignedIn();
+      allow write: if false; // Only manageable directly via Firebase Console
+    }
+
+    match /events/{eventId} {
+      allow read: if isSignedIn();
+      allow create: if isAdmin() && isValidId(eventId) && isValidEvent(incoming());
+      allow update: if isAdmin() && isValidEvent(incoming());
+      allow delete: if isAdmin();
+    }
+
+    match /bets/{betId} {
+      allow read: if isSignedIn(); // Users see bets, or maybe just their own? Leaderboard doesn't need bets. Let's make it only their own.
+      allow create: if isOwner(incoming().userId) && isValidId(betId) && isValidBet(incoming());
+      allow update: if isAdmin() && isValidBet(incoming()); // Admins resolve bets
+    }
+
+    match /transactions/{transactionId} {
+      allow read: if isOwner(resource.data.userId) || isAdmin();
+      allow create: if isOwner(incoming().userId) && isValidId(transactionId) && isValidTransaction(incoming());
+      allow update: if isAdmin() && isValidTransaction(incoming());
+    }
+  }
+}

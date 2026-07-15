@@ -1,0 +1,6 @@
+{
+  "name": "MCKL Sports Carnival",
+  "description": "Tournament management and prediction platform for MCKL sports carnival.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
