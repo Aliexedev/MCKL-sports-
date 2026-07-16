@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { collection, doc, setDoc, updateDoc, onSnapshot, query, orderBy, getDocs, writeBatch, increment, deleteDoc } from 'firebase/firestore';
 import { db } from '../lib/firebase';
 import { SportEvent, HouseColor, Sport, EventStatus, Bet } from '../types';
-import { Shield, Plus, Edit2, Play, CheckCircle, Trash2 } from 'lucide-react';
+import { Shield, Plus, Edit2, Play, CheckCircle, Trash2, ShieldAlert } from 'lucide-react';
 import { format } from 'date-fns';
 import { cn, getTeamName } from '../lib/utils';
 
@@ -37,6 +37,10 @@ export const Admin: React.FC = () => {
   const [scoreB, setScoreB] = useState('0');
   const [winner, setWinner] = useState<string>('');
 
+  // Maintenance Mode States
+  const [maintenance, setMaintenance] = useState(false);
+  const [updatingMaintenance, setUpdatingMaintenance] = useState(false);
+
   useEffect(() => {
     const q = query(collection(db, 'events'), orderBy('startTime', 'desc'));
     const unsub = onSnapshot(q, snap => {
@@ -45,6 +49,32 @@ export const Admin: React.FC = () => {
     });
     return unsub;
   }, []);
+
+  useEffect(() => {
+    const unsub = onSnapshot(doc(db, 'settings', 'system'), (docSnap) => {
+      if (docSnap.exists()) {
+        setMaintenance(docSnap.data().maintenance || false);
+      }
+    });
+    return unsub;
+  }, []);
+
+  const toggleMaintenance = async () => {
+    const actionWord = maintenance ? 'enable public access to' : 'shut down (put into maintenance mode)';
+    if (!window.confirm(`Are you sure you want to ${actionWord} the website?`)) return;
+    setUpdatingMaintenance(true);
+    try {
+      await setDoc(doc(db, 'settings', 'system'), {
+        maintenance: !maintenance
+      }, { merge: true });
+      alert(`Website ${!maintenance ? 'Shutdown / Maintenance Mode Activated' : 'Brought Back Online'} successfully!`);
+    } catch (err) {
+      console.error(err);
+      alert('Failed to update platform status.');
+    } finally {
+      setUpdatingMaintenance(false);
+    }
+  };
 
   const startEditing = (ev: SportEvent) => {
     setEditingEvent(ev);
@@ -266,6 +296,35 @@ export const Admin: React.FC = () => {
 
   return (
     <div className="space-y-6">
+      {/* Global System Settings Card */}
+      <div className="bg-[#1A1D21] p-6 rounded-xl border border-gray-800 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div>
+          <h2 className="text-sm font-bold uppercase tracking-widest flex items-center gap-2 text-white">
+            <ShieldAlert className={cn("w-4 h-4 text-red-500", maintenance && "animate-pulse")} />
+            Global Platform Status
+          </h2>
+          <p className="text-xs text-gray-400 mt-1 max-w-xl">
+            {maintenance 
+              ? "The website is currently shut down for all non-admin users. Visitors see a temporary closed notice. Toggle below to resume."
+              : "The website is live and open to all users. Toggle below to temporarily shut down the platform."}
+          </p>
+        </div>
+        <div>
+          <button
+            onClick={toggleMaintenance}
+            disabled={updatingMaintenance}
+            className={cn(
+              "w-full sm:w-auto px-5 py-2.5 rounded font-black text-xs uppercase tracking-widest transition-all cursor-pointer",
+              maintenance 
+                ? "bg-green-600 hover:bg-green-700 text-white" 
+                : "bg-red-600 hover:bg-red-700 text-white"
+            )}
+          >
+            {updatingMaintenance ? 'Updating...' : maintenance ? 'Go Live (Open Website)' : 'Shut Down Website (Maintenance)'}
+          </button>
+        </div>
+      </div>
+
       <div className="bg-[#1A1D21] p-6 rounded-xl border border-gray-800">
         <h2 className="text-sm font-bold uppercase tracking-widest mb-6 flex items-center gap-2 text-white">
           <Shield className="w-4 h-4 text-red-500" />
